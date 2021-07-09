@@ -8,12 +8,7 @@ def server(port):
     host = '127.0.0.1'
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     s.bind((host, port))
-    while True:
-        (data, address) = s.recvfrom(MAX_SIZE_BYTES)
-        message_recv = data.decode('ascii')
-        print('{}: {!r}'.format(address, message_recv))
-        message = input('You: ')
-        s.sendto(message.encode('ascii'), address)
+    send_and_receive(s)
 
 
 def client(port):
@@ -21,12 +16,16 @@ def client(port):
     host = input('Enter host to start conversation: ')
     message = input('You: ')
     s.sendto(message.encode('ascii'), (host, port))
+    send_and_receive(s)
+
+
+def send_and_receive(s):
     while True:
         (data, address) = s.recvfrom(MAX_SIZE_BYTES)
         message_recv = data.decode('ascii')
         print('{}: {!r}'.format(address, message_recv))
         new_message = input('You: ')
-        s.sendto(new_message.encode('ascii'), (host, port))
+        s.sendto(new_message.encode('ascii'), address)
 
 
 if __name__ == '__main__':
